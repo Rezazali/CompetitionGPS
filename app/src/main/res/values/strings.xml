@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">CompatitiveGps</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="title_onboard_one">Select the quest!</string>
+    <string name="title_onboard_tow">Complete the task!</string>
+    <string name="title_onboard_trre">Become a Top Key Finder</string>
+
+
+    <string name="description_onboard_one">A huge collection of different quests. Historical, children\'s, outdoors and many others...</string>
+    <string name="description_onboard_tow">Search for secret keys, location detection, step counting and much more...</string>
+    <string name="description_onboard_trre">User ratings, quest ratings, quest author ratings...</string>
+
+</resources>
