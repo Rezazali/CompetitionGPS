@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@drawable/bacground_login"
     android:layout_height="match_parent">
 
 
@@ -10,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:background="#707070"
+        android:background="#2C2C2D"
         android:alpha="0.5"
         android:layout_height="match_parent">
 
@@ -32,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_onboard"/>
@@ -41,9 +41,11 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_description_onboard"
-            android:layout_width="wrap_content"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@+id/txt_title_onboard"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -56,7 +58,6 @@
             android:id="@+id/layout_dot_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/txt_description_onboard"
             app:layout_constraintEnd_toEndOf="parent"
