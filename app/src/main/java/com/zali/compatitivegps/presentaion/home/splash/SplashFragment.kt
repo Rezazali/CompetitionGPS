@@ -83,6 +83,7 @@ class SplashFragment : Fragment() , IViewPagerIntractor{
 
     override fun onStart() {
         super.onStart()
+
         Log.d(TAG, "onStart: ")
     }
 

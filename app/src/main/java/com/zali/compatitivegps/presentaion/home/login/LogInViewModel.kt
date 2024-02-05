@@ -3,49 +3,48 @@ package com.zali.compatitivegps.presentaion.home.login
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.zali.compatitivegps.domain.SingUp
+import com.zali.compatitivegps.domain.LogIn
+import com.zali.compatitivegps.domain.Token
 import com.zali.compatitivegps.network.ApiClient
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class SingUpViewModel : ViewModel() {
+class LogInViewModel : ViewModel() {
 
-    private val TAG = "SingUpViewModel"
+    private  val TAG = "LogInViewModel"
+    private lateinit var logInMutable : MutableLiveData<Token>
 
-    private lateinit var singUpLiveData: MutableLiveData<String>
+    fun requestLogin(logIn: LogIn) : MutableLiveData<Token>{
 
-    fun requestWebserver(singUp: SingUp) : MutableLiveData<String>{
+        logInMutable = MutableLiveData()
 
-        singUpLiveData = MutableLiveData()
+        webServer(logIn)
 
-        webserver(singUp)
-
-        return singUpLiveData
+        return logInMutable
     }
 
-    private fun webserver(singUp: SingUp) {
-        ApiClient.createIService().createUser(singUp)
+    private fun webServer(logIn: LogIn) {
+        ApiClient.createIService().login(logIn)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<String>{
+            .subscribe(object :Observer<Token>{
                 override fun onSubscribe(d: Disposable) {
 
                 }
 
                 override fun onError(e: Throwable) {
-                    singUpLiveData.value = e.message
-                    Log.d(TAG, "onError: ")
+                    Log.d(TAG, "onErrorLogIn: ")
                 }
 
                 override fun onComplete() {
 
                 }
 
-                override fun onNext(t: String) {
-                    singUpLiveData.value = t
-                    Log.d(TAG, "onNext: ")
+                override fun onNext(t: Token) {
+                    logInMutable.value = t
+                    Log.d(TAG, "onNextLogIn: ")
                 }
 
             })
