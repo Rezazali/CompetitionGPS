@@ -5,7 +5,12 @@
 
     <color name="red">#FF0000</color>
 
-    <color name="green">#14C7AF</color>
+    <color name="green">#03DAC6</color>
+
+
+
+    <color name="gray">#707070</color>
+    <color name="dark_gray">#2C2C2D</color>
 
 
 </resources>

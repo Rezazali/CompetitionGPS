@@ -8,3 +8,10 @@ data class SendSms(
 data class ContentSms(
     var content : String
 )
+
+data class Code(
+    var code : String
+)
+data class ContentUserActivation(
+    var content: String
+)

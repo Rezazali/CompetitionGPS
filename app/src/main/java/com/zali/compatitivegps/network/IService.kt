@@ -1,6 +1,8 @@
 package com.zali.compatitivegps.network
 
+import com.zali.compatitivegps.domain.Code
 import com.zali.compatitivegps.domain.ContentSms
+import com.zali.compatitivegps.domain.ContentUserActivation
 import com.zali.compatitivegps.domain.LogIn
 import com.zali.compatitivegps.domain.SendSms
 import com.zali.compatitivegps.domain.SingUp
@@ -15,6 +17,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.PartMap
 
 interface IService {
@@ -39,7 +42,11 @@ interface IService {
         @Body sms: SendSms
     ):Observable<ContentSms>
 
-
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @PUT("user/activation")
+    fun userActivation(
+        @Body code: Code
+    ):Observable<Unit>
 
 
 }
