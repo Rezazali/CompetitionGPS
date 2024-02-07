@@ -6,5 +6,6 @@ data class LogIn(
 )
 
 data class Token(
-    var token : String
+    var token : String,
+    var errorMessage : String
 )

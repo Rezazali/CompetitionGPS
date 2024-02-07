@@ -35,6 +35,7 @@ class SendSmsViewModel : ViewModel() {
                 }
 
                 override fun onError(e: Throwable) {
+                    smsSendMutableLiveData.value = ContentSms("",e.message.toString())
                     Log.d(TAG, "onError: ")
                 }
 

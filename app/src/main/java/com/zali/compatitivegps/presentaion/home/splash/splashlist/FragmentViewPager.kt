@@ -59,8 +59,8 @@ class FragmentViewPager(var iViewPagerIntractor: IViewPagerIntractor? = null) : 
         val onBoardImage = view.findViewById<AppCompatImageView>(R.id.img_onboard)
         val titleOnboard = view.findViewById<AppCompatTextView>(R.id.txt_title_onboard)
         val descriptionOnboard = view.findViewById<AppCompatTextView>(R.id.txt_description_onboard)
-        val buttonSkip = view.findViewById<AppCompatButton>(R.id.btn_skip)
-        val buttonNext = view.findViewById<AppCompatButton>(R.id.btn_next)
+        val txtSkip = view.findViewById<AppCompatTextView>(R.id.btn_skip)
+        val txtNext = view.findViewById<AppCompatTextView>(R.id.btn_next)
         dotLayout = view.findViewById(R.id.layout_dot_indicator)
 
 
@@ -68,16 +68,19 @@ class FragmentViewPager(var iViewPagerIntractor: IViewPagerIntractor? = null) : 
         titleOnboard.setText(listTitle[position])
         descriptionOnboard.setText(listDescription[position])
 
-        buttonSkip.setOnClickListener {
+        txtSkip.setOnClickListener {
             iViewPagerIntractor!!.onSkipClicked(position)
         }
 
-        buttonNext.setOnClickListener {
+        txtNext.setOnClickListener {
             iViewPagerIntractor!!.onNextClicked(position)
         }
 
+
+
         if (position == 2){
-            buttonSkip.visibility = View.GONE
+            txtNext.text = "Done"
+            txtSkip.visibility = View.GONE
         }
 
         setUpIndicator(position, container.context)

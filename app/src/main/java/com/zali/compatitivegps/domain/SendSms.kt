@@ -6,7 +6,8 @@ data class SendSms(
 )
 
 data class ContentSms(
-    var content : String
+    var content : String,
+    var errorMessage : String
 )
 
 data class Code(

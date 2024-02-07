@@ -35,6 +35,7 @@ class LogInViewModel : ViewModel() {
                 }
 
                 override fun onError(e: Throwable) {
+                    logInMutable.value = Token("",e.message.toString())
                     Log.d(TAG, "onErrorLogIn: ")
                 }
 
