@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.CompatitiveGps" parent="Base.Theme.CompatitiveGps" />
+
+    <style name="TransparentTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@android:color/transparent</item> <!-- Transparent border -->
+        <!-- Keep default hint and text appearances to preserve hint color and underline -->
+    </style>
+
+
 </resources>

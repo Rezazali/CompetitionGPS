@@ -9,15 +9,15 @@
     tools:context=".presentaion.home.splash.SplashFragment">
 
 
-<!--    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/logo"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/logo_splash"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:src="@drawable/logo_splash"
-        android:layout_margin="8dp"
+        android:layout_margin="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"

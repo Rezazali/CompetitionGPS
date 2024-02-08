@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
+import com.tencent.mmkv.MMKV
 import com.zali.compatitivegps.R
 
 class FragmentViewPager(var iViewPagerIntractor: IViewPagerIntractor? = null) : PagerAdapter() {
@@ -20,7 +21,8 @@ class FragmentViewPager(var iViewPagerIntractor: IViewPagerIntractor? = null) : 
 
     private lateinit var dots: Array<AppCompatTextView?>
 
-    lateinit var dotLayout : LinearLayout
+
+    private lateinit var dotLayout : LinearLayout
 
     private val listImage = listOf<Int>(
         R.drawable.intro_image_one,
@@ -80,6 +82,7 @@ class FragmentViewPager(var iViewPagerIntractor: IViewPagerIntractor? = null) : 
 
         if (position == 2){
             txtNext.text = "Done"
+
             txtSkip.visibility = View.GONE
         }
 

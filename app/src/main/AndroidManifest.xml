@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
+        android:name=".presentaion.Application"
         android:networkSecurityConfig="@xml/network_security"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

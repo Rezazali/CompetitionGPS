@@ -14,13 +14,17 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
+import com.tencent.mmkv.MMKV
 import com.zali.compatitivegps.R
 import com.zali.compatitivegps.databinding.FragmentSplashBinding
 import com.zali.compatitivegps.presentaion.home.splash.splashlist.FragmentViewPager
 import com.zali.compatitivegps.presentaion.home.splash.splashlist.IViewPagerIntractor
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class SplashFragment : Fragment() , IViewPagerIntractor{
@@ -30,6 +34,8 @@ class SplashFragment : Fragment() , IViewPagerIntractor{
     private lateinit var binding : FragmentSplashBinding
 
     private lateinit var viewPager : FragmentViewPager
+
+    private val onBoardKey by lazy{MMKV.mmkvWithID("onBord",MMKV.MULTI_PROCESS_MODE)}
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -57,19 +63,25 @@ class SplashFragment : Fragment() , IViewPagerIntractor{
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ")
 
+        val key =onBoardKey.decodeInt("onBord")
+        if (key == 0){
+            binding.logoSplash.visibility = View.GONE
+            binding.rootSplash.setBackgroundResource(R.drawable.bacground_login)
+            viewPager = FragmentViewPager(this)
+            binding.viewPager.adapter = viewPager
+        }
+        else{
+            binding.logoSplash.visibility = View.VISIBLE
+            binding.viewPager.visibility = View.GONE
+            binding.rootSplash.setBackgroundResource(R.drawable.bacground_splash)
 
-        viewPager = FragmentViewPager(this)
+            lifecycleScope.launch {
+             delay(2000)
+             goToHomePage()
+            }
+        }
 
-        binding.viewPager.adapter = viewPager
 
-    }
-
-
-    private suspend fun changeBacgroudColor(){
-
-        delay(3000)
-      /*  binding.logo.visibility = View.GONE
-        binding.rootSplash.setBackgroundResource(R.drawable.bacground_login)*/
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -122,6 +134,7 @@ class SplashFragment : Fragment() , IViewPagerIntractor{
         if(getItem(0) < 2){
             binding.viewPager.setCurrentItem(getItem(1), true)
         }else{
+            onBoardKey.putInt("onBord",1)
             goToHomePage()
         }
     }

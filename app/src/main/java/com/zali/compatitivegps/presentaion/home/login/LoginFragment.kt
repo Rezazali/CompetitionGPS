@@ -23,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.zali.compatitivegps.R
 import com.zali.compatitivegps.databinding.FragmentLoginBinding
 import com.zali.compatitivegps.domain.Code
@@ -128,7 +129,7 @@ class LoginFragment : Fragment() {
 
         userActivationViewModel.requestUserActivation(Code(code))
             .observe(owner){t->
-                var est = t
+                goHome()
                 Log.d(TAG, "requestVerifyCodeSms: ")
             }
     }
@@ -298,6 +299,10 @@ class LoginFragment : Fragment() {
     }
 
     private fun goHome(){
+        findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
+    }
+
+    fun inputCheak(){
 
     }
 
