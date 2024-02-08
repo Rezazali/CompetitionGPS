@@ -24,6 +24,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.tencent.mmkv.MMKV
 import com.zali.compatitivegps.R
 import com.zali.compatitivegps.databinding.FragmentLoginBinding
 import com.zali.compatitivegps.domain.Code
@@ -56,6 +57,8 @@ class LoginFragment : Fragment() {
 
 
      private var isSignUpOrLogin : Boolean= true
+
+    private val loginKey by lazy { MMKV.mmkvWithID("loginKey",MMKV.MULTI_PROCESS_MODE) }
 
 
     override fun onAttach(context: Context) {
@@ -129,6 +132,7 @@ class LoginFragment : Fragment() {
 
         userActivationViewModel.requestUserActivation(Code(code))
             .observe(owner){t->
+                loginKey.putInt("loginKey",1)
                 goHome()
                 Log.d(TAG, "requestVerifyCodeSms: ")
             }
@@ -142,6 +146,7 @@ class LoginFragment : Fragment() {
                     showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_error,R.drawable.circle_alert_red,R.drawable.clear,R.color.red))
                 }else{
                     showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_success,R.drawable.circle_alert_green,R.drawable.cheak,R.color.green))
+                    loginKey.putInt("loginKey",1)
                     goHome()
                 }
                 Log.d(TAG, "requestSignIn: ")

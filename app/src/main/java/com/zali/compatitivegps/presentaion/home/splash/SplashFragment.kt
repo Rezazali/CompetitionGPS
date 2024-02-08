@@ -37,6 +37,8 @@ class SplashFragment : Fragment() , IViewPagerIntractor{
 
     private val onBoardKey by lazy{MMKV.mmkvWithID("onBord",MMKV.MULTI_PROCESS_MODE)}
 
+    private val loginKey by lazy{MMKV.mmkvWithID("loginKey",MMKV.MULTI_PROCESS_MODE)}
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         Log.d(TAG, "onAttach: ")
@@ -63,25 +65,25 @@ class SplashFragment : Fragment() , IViewPagerIntractor{
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ")
 
-        val key =onBoardKey.decodeInt("onBord")
-        if (key == 0){
+        val keyLogin = loginKey.decodeInt("loginKey")
+        val key = onBoardKey.decodeInt("onBord")
+        if (keyLogin == 1){
+            goToMainPage()
+        }else if (key == 0){
             binding.logoSplash.visibility = View.GONE
             binding.rootSplash.setBackgroundResource(R.drawable.bacground_login)
             viewPager = FragmentViewPager(this)
             binding.viewPager.adapter = viewPager
-        }
-        else{
+        } else{
             binding.logoSplash.visibility = View.VISIBLE
             binding.viewPager.visibility = View.GONE
             binding.rootSplash.setBackgroundResource(R.drawable.bacground_splash)
 
             lifecycleScope.launch {
-             delay(2000)
-             goToHomePage()
+                delay(2000)
+                goToLoginPage()
             }
         }
-
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -126,7 +128,7 @@ class SplashFragment : Fragment() , IViewPagerIntractor{
     }
 
     override fun onSkipClicked(position: Int) {
-        goToHomePage()
+        goToLoginPage()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -135,12 +137,17 @@ class SplashFragment : Fragment() , IViewPagerIntractor{
             binding.viewPager.setCurrentItem(getItem(1), true)
         }else{
             onBoardKey.putInt("onBord",1)
-            goToHomePage()
+            goToLoginPage()
         }
     }
 
 
-    private fun goToHomePage(){
+    private fun goToLoginPage(){
         findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+    }
+
+
+    private fun goToMainPage(){
+        findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+     <item android:id="@+id/menu_gps" android:icon="@drawable/icon_gps_sidbar" android:title=""/>
+     <item android:id="@+id/menu_key" android:icon="@drawable/icon_sidbar_key" android:title=""/>
+     <item android:id="@+id/menu_chat" android:icon="@drawable/icon_sidbar_chat" android:title=""/>
+     <item android:id="@+id/menu_favorites" android:icon="@drawable/icon_favorite_sidbar" android:title=""/>
+     <item android:id="@+id/menu_rating" android:icon="@drawable/icon_sidebar_cup" android:title=""/>
+     <item android:id="@+id/menu_compass" android:icon="@drawable/icon_compass_sidebar" android:title=""/>
+
+</menu>
