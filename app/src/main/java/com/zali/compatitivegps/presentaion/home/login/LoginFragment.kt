@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -21,6 +22,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -32,6 +35,11 @@ import com.zali.compatitivegps.domain.DataAlertDialog
 import com.zali.compatitivegps.domain.LogIn
 import com.zali.compatitivegps.domain.SendSms
 import com.zali.compatitivegps.domain.SingUp
+import com.zali.compatitivegps.util.isNotEmpty
+import com.zali.compatitivegps.util.isValidEmail
+import com.zali.compatitivegps.util.isValidMobile
+import com.zali.compatitivegps.util.textMatches
+import com.zali.compatitivegps.util.showToast
 
 class LoginFragment : Fragment() {
 
@@ -56,7 +64,7 @@ class LoginFragment : Fragment() {
     private lateinit var repeatPasswordEditText : AppCompatEditText
 
 
-     private var isSignUpOrLogin : Boolean= true
+    private var isSignUpOrLogin : Boolean= true
 
     private val loginKey by lazy { MMKV.mmkvWithID("loginKey",MMKV.MULTI_PROCESS_MODE) }
 
@@ -64,6 +72,7 @@ class LoginFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         owner = this
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,25 +110,46 @@ class LoginFragment : Fragment() {
     }
 
     private fun requestSignUp() {
-        isSignUpOrLogin = false
-        signUpViewModel.requestWebserver(SingUp(binding.edtEmails.text.toString(),nickNameEditText.text.toString(),passwordEditText.text.toString(),phoneEditText.text.toString()))
-            .observe(owner){t->
-                if(t.equals("Success")){
-                    binding.cardViewAuth.visibility = View.GONE
-                    binding.cardViewSms.visibility = View.VISIBLE
-                    requestSmsCode()
+        if (validateInputSignUp(binding.edtEmails,phoneEditText,passwordEditText,repeatPasswordEditText)){
+            isSignUpOrLogin = false
+            signUpViewModel.requestWebserver(SingUp(binding.edtEmails.text.toString(),nickNameEditText.text.toString(),passwordEditText.text.toString(),phoneEditText.text.toString()))
+                .observe(owner){t->
+                    if(t.equals("Success")){
+                        binding.cardViewAuth.visibility = View.GONE
+                        binding.cardViewSms.visibility = View.VISIBLE
+                        requestSmsCode()
+                    }
+                    Log.d(TAG, "requestSignUp: ")
                 }
-                Log.d(TAG, "requestSignUp: ")
-            }
+        }
+    }
+
+    private fun requestSignIn(){
+        if (validateInputSignIn(binding.edtEmails,binding.edtPassword)){
+            isSignUpOrLogin = true
+            logInViewModel.requestLogin(LogIn(binding.edtEmails.text.toString(),binding.edtPassword.text.toString()))
+                .observe(owner){t ->
+                    if(t.token.isEmpty()){
+                        showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_error,R.drawable.circle_alert_red,R.drawable.clear,R.color.red))
+                    }else{
+                        showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_success,R.drawable.circle_alert_green,R.drawable.cheak,R.color.green))
+                        loginKey.putInt("loginKey",1)
+                        goHome()
+                    }
+                    Log.d(TAG, "requestSignIn: ")
+                }
+        }
+
     }
 
     private fun requestSmsCode() {
         sendSmsViewModel.requestSmsSend(SendSms(countryCodeEditText.text.toString(),phoneEditText.text.toString()))
             .observe(owner){t->
                 if (t.content.equals("ok")){
+                    binding.txtSendCodeAgain.visibility = View.GONE
                     edtCodeWatcher()
+                    startTimer(10000)
                 }
-                var test = t
                 Log.d(TAG, "requestSmsCode: ")
             }
     }
@@ -138,20 +168,7 @@ class LoginFragment : Fragment() {
             }
     }
 
-    private fun requestSignIn(){
-        isSignUpOrLogin = true
-        logInViewModel.requestLogin(LogIn(binding.edtEmails.text.toString(),binding.edtPassword.text.toString()))
-            .observe(owner){t ->
-                if(t.token.isEmpty()){
-                    showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_error,R.drawable.circle_alert_red,R.drawable.clear,R.color.red))
-                }else{
-                    showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_success,R.drawable.circle_alert_green,R.drawable.cheak,R.color.green))
-                    loginKey.putInt("loginKey",1)
-                    goHome()
-                }
-                Log.d(TAG, "requestSignIn: ")
-            }
-    }
+
 
     private fun edtCodeWatcher(){
 
@@ -307,8 +324,81 @@ class LoginFragment : Fragment() {
         findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
     }
 
-    fun inputCheak(){
 
+    private fun startTimer(timeInMillis: Long) {
+        object : CountDownTimer(timeInMillis, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                // Update the timer text view every second
+                val minutes = millisUntilFinished / 1000 / 60
+                val seconds = millisUntilFinished / 1000 % 60
+                binding.txtTimeNumber.text = String.format("%02d:%02d", minutes, seconds)
+            }
+
+            override fun onFinish() {
+                // Enable the resend button when the timer finishes
+                binding.txtSendCodeAgain.visibility = View.VISIBLE
+                binding.txtTimeNumber.text = "00:00"
+
+                binding.txtSendCodeAgain.setOnClickListener {
+                    // Code to resend the SMS
+                    requestSmsCode()
+                    binding.txtSendCodeAgain.visibility = View.GONE
+                    startTimer(10000) // Restart the timer
+                }
+            }
+        }.start()
+    }
+
+
+    private fun validateInputSignUp(emailEditText: AppCompatEditText, mobileEditText: AppCompatEditText, passwordEditText: AppCompatEditText, repeatPasswordEditText: AppCompatEditText): Boolean {
+        if (!emailEditText.isNotEmpty() || !mobileEditText.isNotEmpty() || !passwordEditText.isNotEmpty() || !repeatPasswordEditText.isNotEmpty()) {
+            Toast.makeText(requireContext(), "Edit text Empty field", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (!emailEditText.isValidEmail()){
+            requireContext().showToast("Bad Email")
+            redLineEditText(emailEditText)
+            return false
+        }
+        if (!passwordEditText.textMatches(repeatPasswordEditText)) {
+            requireContext().showToast("password dont match")
+            redLineEditText(passwordEditText)
+            return false
+        }
+        if (!mobileEditText.isValidMobile()) {
+            requireContext().showToast("Bad mobail")
+            redLineEditText(mobileEditText)
+            return false
+        }
+
+        if (!passwordEditText.textMatches(repeatPasswordEditText)) {
+            redLineEditText(passwordEditText)
+            return false
+        }
+
+        return true
+    }
+
+    private fun validateInputSignIn(emailEditText: AppCompatEditText, passwordEditText: AppCompatEditText): Boolean{
+        if (!emailEditText.isNotEmpty() || !passwordEditText.isNotEmpty()) {
+            requireContext().showToast("Edit text Empty field")
+            return false
+        }
+        if (!emailEditText.isValidEmail()) {
+            requireContext().showToast("Bad Email")
+            redLineEditText(emailEditText)
+            return false
+        }
+        return true
+    }
+
+
+
+    private fun redLineEditText(editText: AppCompatEditText){
+        ViewCompat.setBackgroundTintList(
+            editText,
+            ContextCompat.getColorStateList(requireContext(), R.color.red)
+        )
     }
 
 }
