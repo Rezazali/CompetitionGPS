@@ -119,7 +119,9 @@ class LoginFragment : Fragment() {
                         binding.cardViewSms.visibility = View.VISIBLE
                         requestSmsCode()
                     }
-                    Log.d(TAG, "requestSignUp: ")
+                    else{
+                        showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_error,R.drawable.circle_alert_red,R.drawable.clear,R.color.red))
+                    }
                 }
         }
     }
@@ -148,7 +150,9 @@ class LoginFragment : Fragment() {
                 if (t.content.equals("ok")){
                     binding.txtSendCodeAgain.visibility = View.GONE
                     edtCodeWatcher()
-                    startTimer(10000)
+                    startTimer(180000)
+                }else{
+                    showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_error,R.drawable.circle_alert_red,R.drawable.clear,R.color.red))
                 }
                 Log.d(TAG, "requestSmsCode: ")
             }
@@ -164,6 +168,7 @@ class LoginFragment : Fragment() {
             .observe(owner){t->
                 loginKey.putInt("loginKey",1)
                 goHome()
+                showAlertDialogButtonClicked(DataAlertDialog(R.string.alert_title_success,R.drawable.circle_alert_green,R.drawable.cheak,R.color.green))
                 Log.d(TAG, "requestVerifyCodeSms: ")
             }
     }
@@ -343,7 +348,7 @@ class LoginFragment : Fragment() {
                     // Code to resend the SMS
                     requestSmsCode()
                     binding.txtSendCodeAgain.visibility = View.GONE
-                    startTimer(10000) // Restart the timer
+                    startTimer(180000) // Restart the timer
                 }
             }
         }.start()
